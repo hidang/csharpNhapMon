@@ -1,0 +1,34 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace LinQDemo
+{
+    public static class ProductExtenstion
+    {
+        //Method tương tự với where của Linq
+        public static IEnumerable<T> MyWhere<T>(this IEnumerable<T> list, Func<T, bool> myCondition)
+        {
+            foreach (var item in list)
+            {
+                if (myCondition(item)) yield return item;
+            }
+        }
+    }
+    public class Product
+    {
+        public int ID { set; get; }
+        public string Name { set; get; }         // tên
+        public double Price { set; get; }        // giá
+        public string[] Colors { set; get; }     // cá màu
+        public int Brand { set; get; }           // ID Nhãn hiệu, hãng
+        public Product(int id, string name, double price, string[] colors, int brand)
+        {
+            ID = id; Name = name; Price = price; Colors = colors; Brand = brand;
+        }
+        // Lấy chuỗi thông tin sản phẳm gồm ID, Name, Price
+        override public string ToString() => $"{ID,3} {Name,12} {Price,5} {Brand,2} {string.Join(",", Colors)}";
+
+    }
+
+}
