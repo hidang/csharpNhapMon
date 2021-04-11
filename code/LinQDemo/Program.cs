@@ -20,19 +20,12 @@ namespace LinQDemo
                 new Product(7, "Tủ áo",      600, new string[] {"Trắng"},               3),
             };
 
-            //Where
+            //- WHERE
             //truy vấn vào List Prodect lấy các sản phẩm có giá bằng 400
-            //var temp = products.Where(c => c.Price == 400).ToList();
+            //var temp = products.Where(c => c.Price == 400);
 
-            //gọi phương thức MyWhere(products, callback hàm bool để xét điều kiện)
-            var ketqua = products.MyWhere(c => c.Price == 400).ToList();
-            foreach (var product in ketqua) Console.WriteLine(product.ToString());
-
-            //orderBy
-            var orderByResult = from s in products
-                                orderby s.Price
-                                select s;
-
+            var result = products.MyWhere(c => c.Price == 400);//gọi phương thức MyWhere(products, callback hàm bool để xét điều kiện)
+            foreach (var product in result) Console.WriteLine(product.ToString());
         }
     }
 }
