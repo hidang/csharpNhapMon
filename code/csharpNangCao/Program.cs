@@ -11,37 +11,23 @@ namespace csharpNangCao
             Console.WriteLine("Nhap n: ");
             n = int.Parse(Console.ReadLine());
 
-            DungDeQuy(n);
-            //DongVongLap(n);
+            //DungDeQuy(n);
+            DungCT(n);
             //DungVongLapVoiList(n);
         }
-        private static void DongVongLap(int n)
+        private static void DungCT(int n)//Fn = {[(√5 + 1)/2] ^ n} / √5 
         {
-            static int Fibonacci(int n)
+            static int fib(int n)
             {
-                int number1 = 0;
-                int number2 = 1;
-                int number_kq = 1;
-                int i;
-                if (n == 1)
-                {
-                    return n;
-                }
-
-                for (i = 2; i < n; i++)
-                {
-                    number1 = number2;
-                    number2 = number_kq;
-                    number_kq = number1 + number2;
-                }
-                
-                return number_kq;
+                double phi = (1 + Math.Sqrt(5)) / 2;
+                return (int)Math.Round(Math.Pow(phi, n)
+                                        / Math.Sqrt(5));
             }
-            for (int i = 0; i < n; i++) Console.WriteLine(Fibonacci(i));       
+            for (int i = 0; i < n; i++) Console.WriteLine(fib(i));       
         }
         private static void DungVongLapVoiList(int n)
         {
-            var finbonacciList = new List<int> { 1, 1 };//khoi tao 2 phan tu ban dau de khong dung if ở loop
+            var finbonacciList = new List<int> { 0, 1 };//khoi tao 2 phan tu ban dau de khong dung if ở loop
 
             while (finbonacciList.Count < n) //đến khi nào độ dài List kq bằng n thì ngưng loop
             {
