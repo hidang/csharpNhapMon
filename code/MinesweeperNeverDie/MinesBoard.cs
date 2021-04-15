@@ -116,7 +116,6 @@ namespace MinesweeperNeverDie
                             {
                                 InitMinesInBoard(i, j);
                                 OpenCell(i, j);
-                                CheckWin();
                                 fistclick = false;
                                 //re-RenderBoard
                                 RenderBoard();
@@ -157,7 +156,6 @@ namespace MinesweeperNeverDie
                                     if (boardRevealed[i, j] != 11 && boardRevealed[i, j] != 0)
                                     {
                                         OpenCell(i, j);
-                                        CheckWin();
                                         //re-RenderBoard
                                         RenderBoard();
                                     }
@@ -168,7 +166,8 @@ namespace MinesweeperNeverDie
                                     {
                                         boardRevealed[i, j] = 11;
                                         flag++;
-
+                                        if(flag == mines)
+                                            CheckWin();
                                         //re-RenderBoard
                                         RenderBoard();
                                     }
@@ -295,8 +294,9 @@ namespace MinesweeperNeverDie
             {
                 for (int _j = 0; _j < col; _j++)
                 {
-                    if (boardRevealed[_i, _j] == 10 || boardRevealed[_i, _j] == 11 || boardRevealed[_i, _j] == 9)
-                        cellMines++;
+                    if (boardRevealed[_i, _j] == 11)
+                        if(board[_i, _j] == 9)
+                            cellMines++;
                 }
             }
             if (cellMines == mines)
