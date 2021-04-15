@@ -132,6 +132,7 @@ namespace MinesweeperNeverDie
                                             boardRevealed[i, j] = 9;
                                             RenderBoard();
                                             boardRevealed[i, j] = 11;
+                                            flag++;
                                             RenderBoard();
                                         }
                                         else
@@ -294,13 +295,21 @@ namespace MinesweeperNeverDie
             {
                 for (int _j = 0; _j < col; _j++)
                 {
-                    if (boardRevealed[_i, _j] == 11)
+                    if (boardRevealed[_i, _j] == 11 || boardRevealed[_i, _j] == 9)
                         if(board[_i, _j] == 9)
                             cellMines++;
                 }
             }
             if (cellMines == mines)
             {
+                for (int _i = 0; _i < row; _i++)
+                {
+                    for (int _j = 0; _j < col; _j++)
+                    {
+                        if (boardRevealed[_i, _j] == 10)
+                            OpenCell(_i, _j);
+                    }
+                }
                 gameWin = true;
                 gameOver = true;//ngưng việc user click
                 Console.WriteLine("You win");
