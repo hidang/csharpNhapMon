@@ -1,5 +1,5 @@
 ﻿using ProjectOOP_DI.ThietBiClasses;
-using ProjectOOP_DI.ThietBiClasses.Interface;
+using ProjectOOP_DI.IOServices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,17 +10,21 @@ namespace ProjectOOP.ThietBiClasses
 {
     public class ThietBi
     {
-        private readonly IThietBi _tb;
-        public ThietBi(IThietBi tb)
+        public readonly IInputOutputServices ioServices;
+        public ThietBi(IInputOutputServices _ioServices)
         {
-            _tb = tb;
+            ioServices = _ioServices;
         }
-        private string ma;
-        private string tenSanPham;
-        private string noiSanXuat;
+        public ThietBi()
+        {
 
-        private double gia;
-        private int soLuongBanRa;
+        }
+        protected string ma;
+        protected string tenSanPham;
+        protected string noiSanXuat;
+
+        protected double gia;
+        protected int soLuongBanRa;
 
         public double Gia
         {
@@ -41,19 +45,11 @@ namespace ProjectOOP.ThietBiClasses
             this.tenSanPham = Console.ReadLine();
             Console.Write("\t\t\tNơi sản xuất: ");
             this.noiSanXuat = Console.ReadLine();
-            _tb.Nhap(ref gia);
+            ioServices.Input();
         }
         public string Xuat()
         {
-            //init data for BaseInfoThietBi
-            BaseInfoThietBiStruct tb = new BaseInfoThietBiStruct();
-            tb.ma = ma;
-            tb.tenSanPham = tenSanPham;
-            tb.noiSanXuat = noiSanXuat;
-            tb.gia = gia;
-            tb.soLuongBanRa = soLuongBanRa;
-
-            return _tb.Xuat(tb);
+            return ioServices.Output();
         }
     }
 }

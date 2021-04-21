@@ -108,7 +108,7 @@ namespace ProjectOOP.ChiTietHoaDonClasses
                 switch (typeMLanh)
                 {
                     case 1:
-                        TB = new ThietBi(new MayLanh(new MayLanh1Chieu()));
+                        TB = new ThietBi(new MayLanh1Chieu());
                         trueTypeMLanh = true;
                         break;
                     case 2:

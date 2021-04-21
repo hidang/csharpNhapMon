@@ -1,6 +1,5 @@
 ﻿using ProjectOOP_DI.ThietBiClasses;
-using ProjectOOP_DI.ThietBiClasses.Interface;
-using ProjectOOP_DI.ThietBiClasses.MayLanhClasses.Interface;
+using ProjectOOP_DI.IOServices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,20 +8,18 @@ using System.Threading.Tasks;
 
 namespace ProjectOOP.ThietBiClasses.MayLanhClasses
 {
-    class MayLanh1Chieu : IMayLanh
+    class MayLanh1Chieu : MayLanh, IInputOutputServices
     {
-        private bool inverter;
-        public void Nhap(ref double gia, bool inverter)
+        public void Input()
         {
-            this.inverter = inverter;
-            if (inverter) gia = 1500;
+            base.CheckingInverter();
+            if (base.inverter) gia = 1500;
             else gia = 1000;
         }
-        public string Xuat(BaseInfoThietBiStruct tb)
+        public string Output()
         {
-            string mayLanh1Chieu = "";
-            mayLanh1Chieu += $"\tMáy lạnh: {tb.ma} loại máy lạnh (1 chiều) {tb.tenSanPham} {tb.noiSanXuat} {tb.gia * tb.soLuongBanRa} {(inverter? "có hỗ trợ công nghệ inverter" : "không hỗ trợ công nghệ inverter")} {tb.soLuongBanRa}\n";
-            return mayLanh1Chieu;
+           return  $"\tMáy lạnh: {base.ma} loại máy lạnh (1 chiều) {base.tenSanPham} {base.noiSanXuat} {base.gia * base.soLuongBanRa} {(base.inverter ? "có hỗ trợ công nghệ inverter" : "không hỗ trợ công nghệ inverter")} {base.soLuongBanRa}\n";
+           
         }
     }
 }
