@@ -1,0 +1,111 @@
+﻿@using TodoList.Services
+@using TodoList.Model
+@inject TodoListService todoListService
+
+@if (!Delete)
+{
+    <tr class="todo @rowClass">
+        <td class="text-center">
+            @if(Todo.done)
+            {
+                <input type="checkbox" checked @onchange="eventArgs => { HandleCheckboxDoneClicked(eventArgs.Value); }" />
+            }
+            else
+            {
+                <input type="checkbox" @onchange="eventArgs => { HandleCheckboxDoneClicked(eventArgs.Value); }" />
+            }
+        </td>
+
+        @if (!isEditingTodo)
+        {
+            <td class="@textClass">@Todo.content</td>
+        }
+        else
+        {
+            <td>
+                <input type="text"
+                       placeholder=@Todo.content
+                       @bind-value="Todo.content" @bind-value:event="oninput" />
+                <input type="button" class="btn btn-success" value="OK" @onclick="EditTodo" />
+                <input type="button" class="btn btn-danger" value="Cancel" @onclick="HandleClickEditTodo" />
+            </td>
+        }
+
+        <td class="" style="width:20%;">
+            <input type="button" class="btn btn-info" value="Edit" @onclick="HandleClickEditTodo" />
+            <input type="button" class="btn btn-danger" value="Delete" @onclick="DeleteTodo" />
+        </td>
+    </tr>
+}
+
+@code {
+    [Parameter]
+    public Todo Todo { get; set; }
+
+    [Parameter]
+    public Action<string> DeleteTodoItem { get; set; }
+
+    string textClass => Todo.done ? "font-italic" : null;
+    string rowClass => Todo.done ? "table-secondary" : null;
+
+    bool isEditingTodo { get; set; } = false;
+
+    string tempContent { get; set; }
+
+    bool Delete { get; set; } = false;
+
+    //when user click checkbox
+    void HandleCheckboxDoneClicked(object checkedValue)
+    {
+        //check if editing -> cancel editing
+        if (isEditingTodo) HandleClickEditTodo();
+        //check value Todo.done
+        if ((bool)checkedValue)
+        {
+            if (!Todo.done)
+            {
+                Todo.done = true;
+                EditTodo();
+            }
+        }
+        else
+        {
+            if(Todo.done)
+            {
+                Todo.done = false;
+                EditTodo();
+            }
+        }
+    }
+    //when user click Edit button
+    void HandleClickEditTodo()
+    {
+        if (!isEditingTodo)
+        {
+            isEditingTodo = true;
+            tempContent = Todo.content;
+        }
+        else
+        {
+            Todo.content = tempContent;
+            isEditingTodo = false;
+        }
+    }
+
+    async void EditTodo()
+    {
+        bool result = await todoListService.UpdateTodoAsync(Todo);
+        if (result)
+        {
+            isEditingTodo = false;
+            StateHasChanged();
+        }else
+        {
+            //TODO: show message error: delete that bai
+        }
+    }
+    void DeleteTodo()
+    {
+        DeleteTodoItem(Todo.id);
+    }
+}

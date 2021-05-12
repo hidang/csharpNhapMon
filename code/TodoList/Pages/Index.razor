@@ -1,0 +1,60 @@
+﻿@page "/"
+@using TodoList.Model
+@using TodoList.Services
+@inject TodoListService todoListService
+
+<h1>Todo List</h1>
+<hr />
+
+@if (todos == null)
+{
+    <p><em>Loading TodoList... @todos</em></p> }
+else
+{
+    <TodoLists Todos="@todos" DeleteTodoItem="@DeleteTodoItem"/>
+    <NewTodoItem AddTodoItem="@AddTodoItem" />
+}
+
+@code{
+    List<Todo> todos = new List<Todo>() {};
+    protected override async Task OnInitializedAsync()
+    {
+        //Debug.WriteLine("dang");
+        todos = await todoListService.GetTodoAsync();
+        if (todos.Count == 0) todos = new List<Todo>() {};
+    }
+
+    async void AddTodoItem(string newItemText)
+    {
+        if (newItemText != "")
+        {
+            Todo temp_todo = new Todo() {
+                //get id of last element todo in todos and + 1 it then... hehehe
+                id = todos?.Count == 0 ? "0" : (Int32.Parse(todos[todos.Count - 1].id) + 1).ToString(),
+                content = newItemText,
+                done = false
+            };
+            bool result = await todoListService.AddTodoAsync(temp_todo);
+            if (result)
+            {
+                todos = await todoListService.GetTodoAsync();
+            }
+            else
+            {
+                //Debug.WriteLine(temp_todo);
+                //TODO: show message error: add todo fail
+            }
+            StateHasChanged();
+        }
+    }
+
+    async void DeleteTodoItem(string id)
+    {
+        bool result = await todoListService.DeleteTodoAsync(id);
+        if(result)
+        {
+            todos = await todoListService.GetTodoAsync();
+            StateHasChanged();
+        }
+    }
+}

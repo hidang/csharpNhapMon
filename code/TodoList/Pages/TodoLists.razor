@@ -1,0 +1,24 @@
+﻿@using TodoList.Model
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th class="text-center" style="width:10%;">Done</th>
+            <th>To do</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var todo in Todos)
+        {
+            <TodoItem Todo="@todo" DeleteTodoItem="@DeleteTodoItem"/>
+        }
+    </tbody>
+</table>
+
+@code {
+    [Parameter]
+    public IList<Todo> Todos { get; set; }
+    [Parameter]
+    public Action<string> DeleteTodoItem { get; set; }
+}
