@@ -1,0 +1,22 @@
+﻿@using TodoList.Model
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th class="text-center" style="width:10%;">Done</th>
+            <th>To do</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var todo in Todos)
+        {
+            <TodoItem Id="@todo.Id" Text="@todo.Text" Done="@todo.Done" />
+        }
+    </tbody>
+</table>
+
+@code {
+    [Parameter]
+    public IList<Todo> Todos { get; set; }
+}

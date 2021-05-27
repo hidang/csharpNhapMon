@@ -1,0 +1,153 @@
+﻿@page "/"
+@using System.Threading;
+@using System.ComponentModel.DataAnnotations;
+@using System.Diagnostics;
+@inject IJSRuntime JsRuntime;
+<h1>Pomodoro Timer</h1>
+<hr />
+<div class="text-center">
+    <div class="row text-center">
+        <div class="col-12 text-center">
+            <div class="row">
+                <div class="col-8 offset-2">
+                    <div class="row justify-content-md-center">
+                        <div class="col col-lg-2">
+                            <input type="button" value="Pomodoro" @onclick="SetToPomodoro" class="@(_timerType == TimerType.Pomodro? "btn btn-success active":"btn btn-outline-success")" />
+                        </div>
+                        <div class="col col-lg-2">
+                            <input type="button" value="Short Break" @onclick="SetToShortBreak" class="@(_timerType == TimerType.ShortBreak? "btn btn-success active":"btn btn-outline-success")" />
+                        </div>
+                        <div class="col col-lg-2">
+                            <input type="button" value="Long Break" @onclick="SetToLongBreak" class="@(_timerType == TimerType.LongBreak? "btn btn-success active":"btn btn-outline-success")" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <span class="badge badge-pill badge-secondary m-3" style="font-size: 100px;">
+                                @_timeLeft.ToString("mm:ss")
+                            </span>
+                        </div>
+                        <div class="col-12">
+                            <FiveMinCount Count="@_countFiveMin"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <input class="@(_timerHasStarted? "btn btn-danger":"btn btn-primary") btn-lg" type="button" @onclick="SetTimer" value="@(_timerHasStarted? "Stop":"Start")" />
+                            <input class="btn btn-warning btn-lg" type="button" @onclick="ResetTimer" value="Reset" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private bool _timerHasStarted;
+    private static System.Timers.Timer _aTimer;
+    private DateTime _timeLeft = new DateTime();
+    private DateTime _timeFiveMin = new DateTime();
+    private int _countFiveMin = 0;
+
+    public enum TimerType
+    {
+        NoPomodro = 0,
+        Pomodro = 1,
+        ShortBreak = 2,
+        LongBreak = 3
+    }
+    private TimerType _timerType = TimerType.NoPomodro;
+
+    private void SetToPomodoro()
+    {
+        _timerHasStarted = false;
+        _timeLeft = new DateTime();
+
+        _timerType = TimerType.Pomodro;
+        _timeLeft = _timeLeft.AddMinutes(25);
+    }
+    private void SetToShortBreak()
+    {
+        _timerHasStarted = false;
+        _timeLeft = new DateTime();
+
+        _timerType = TimerType.ShortBreak;
+        _timeLeft = _timeLeft.AddMinutes(5);
+    }
+    private void SetToLongBreak()
+    {
+        _timerHasStarted = false;
+        _timeLeft = new DateTime();
+        _timerType = TimerType.LongBreak;
+        _timeLeft = _timeLeft.AddMinutes(15);
+    }
+
+    private void ResetTimer()
+    {
+        _timerHasStarted = false;
+
+        switch (_timerType)
+        {
+            case TimerType.Pomodro:
+                SetToPomodoro();
+                break;
+            case TimerType.ShortBreak:
+                SetToShortBreak();
+                break;
+            case TimerType.LongBreak:
+                SetToLongBreak();
+                break;
+        }
+    }
+
+    private void SetTimer()
+    {
+        if (_timerType == TimerType.NoPomodro)
+        {
+            JsRuntime.InvokeVoidAsync("alert", "Xin hãy chọn kiểu Pomodro!");
+            return;
+        }
+        if (_timerHasStarted)
+        {
+            _timerHasStarted = false;
+        }
+        else
+        {
+            if (_aTimer != null)
+            {
+                _aTimer.Dispose();
+            }
+            _timerHasStarted = true;
+            _aTimer = new System.Timers.Timer(1000);
+            _aTimer.Elapsed += OnTimedEvent;
+            _aTimer.AutoReset = true;
+            _aTimer.Enabled = true;
+        }
+        StateHasChanged();
+    }
+
+    private void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
+    {
+        if (_timerHasStarted)
+        {
+            if (_timeLeft.Hour == 0 && _timeLeft.Minute == 0 && _timeLeft.Second == 0)
+            {
+                ResetTimer();
+                JsRuntime.InvokeVoidAsync("alert", "Complete Pomodoro!");
+            }
+            else
+            {
+                _timeLeft = _timeLeft.AddSeconds(-1);
+                // ++ Bộ đếm
+                _timeFiveMin = _timeFiveMin.AddSeconds(1);
+                if(_timeFiveMin.Minute == 5)
+                {
+                    _timeFiveMin = _timeFiveMin.AddMinutes(-5);
+                    _countFiveMin++;
+                }
+            }
+            InvokeAsync(StateHasChanged);
+        }
+    }
+}

@@ -1,0 +1,51 @@
+﻿@page "/"
+@using TodoList.Model
+@using TodoList.Data
+@using System.Diagnostics;
+
+@inject TodoListService todoListService
+
+<h1>Todo List</h1>
+<hr />
+@if (todos == null)
+{
+    <p><em>Loading TodoList...</em></p>
+}
+else
+{
+    <TodoLists Todos="@todos"/>
+    <NewTodoItem OnNewItem="@OnNewItem" />
+}
+
+@code{
+    private Todo[] todos;
+
+
+    //TODO: todos phải được filter
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        //Debug.WriteLine("dang");
+        todos = await todoListService.GetTodoAsync();
+    }
+
+    async void OnNewItem(string newItemText)
+    {
+        if (todos != null && newItemText != "")
+        {
+            bool result = await todoListService.AddTodoAsync(newItemText);
+            if (result)
+            {
+                todos = await todoListService.GetTodoAsync();
+                StateHasChanged();
+            }
+            else
+            {
+                //TODO: show message error: add todo fail
+            }
+        }
+    }
+
+
+}

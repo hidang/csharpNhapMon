@@ -1,0 +1,80 @@
+﻿@using TodoList.Data
+@inject TodoListService todoListService
+
+@if (!Delete)
+{
+    <tr class="todo @rowClass">
+        <td class="text-center">
+            <input type="checkbox" class="" @bind="Done" />
+        </td>
+
+        @if (!isEditingTodo)
+        {
+            <td class="@textClass">@Text</td>
+        }
+        else
+        {
+            <td>
+                <input type="text"
+                       placeholder=@Text
+                       @bind-value="Text" @bind-value:event="oninput" />
+                <input type="button" class="btn btn-success" value="OK" @onclick="EditTodo" />
+                <input type="button" class="btn btn-danger" value="Cancel" @onclick="HandleClickEditTodo" />
+            </td>
+        }
+
+        <td class="" style="width:20%;">
+            <input type="button" class="btn btn-info" value="Edit" @onclick="HandleClickEditTodo" />
+            <input type="button" class="btn btn-danger" value="Delete" @onclick="DeleteTodo" />
+        </td>
+    </tr>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    [Parameter]
+    public string Text { get; set; }
+    [Parameter]
+    public bool Done { get; set; }
+
+    string textClass => Done ? "font-italic" : null;
+    string rowClass => Done ? "table-secondary" : null;
+
+    bool isEditingTodo { get; set; } = false;
+
+    string Temp_Text { get; set; }
+
+    bool Delete { get; set; } = false;
+
+    void HandleClickEditTodo()
+    {
+        if (!isEditingTodo)
+        {
+            isEditingTodo = true;
+            Temp_Text = Text;
+        }
+        else
+        {
+            Text = Temp_Text;
+            isEditingTodo = false;
+        }
+    }
+    void EditTodo()
+    {
+
+    }
+    async void DeleteTodo()
+    {
+        bool result = await todoListService.DeleteTodoAsync(Id);
+        if (result)
+        {
+            Delete = true;
+            //StateHasChanged();
+        }
+        else
+        {
+            //show message error: delete that bai
+        }
+    }
+}
